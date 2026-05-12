@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strava Connected — Cadence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Space+Grotesk:wght@400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px">
+    <div class="auth-card" style="text-align:center;max-width:420px">
+      <div class="brand">Ca<span>den</span>ce</div>
+
+      <!-- Loading state -->
+      <div id="state-loading">
+        <div style="font-size:2.5rem;margin-bottom:16px">🔗</div>
+        <h2 style="margin-bottom:8px">Connecting Strava…</h2>
+        <p style="color:var(--muted);font-size:0.88rem" id="loading-status">Processing authorization…</p>
+        <div style="margin-top:20px"><div class="spinner"></div></div>
+      </div>
+
+      <!-- Success state -->
+      <div id="state-success" style="display:none">
+        <div style="font-size:3rem;margin-bottom:16px">🎉</div>
+        <h2 style="margin-bottom:10px">Your Strava is now connected!</h2>
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:28px;line-height:1.5">
+          Your activities are being synced.<br>Check your dashboard to see your data.
+        </p>
+        <a href="./app.html?strava=connected" class="btn btn-primary" style="display:inline-block;text-decoration:none;padding:12px 28px;border-radius:8px">
+          Go to your data →
+        </a>
+      </div>
+
+      <!-- Error state -->
+      <div id="state-error" style="display:none">
+        <div style="font-size:2.5rem;margin-bottom:16px">⚠️</div>
+        <h2 id="error-title" style="margin-bottom:8px">Error</h2>
+        <pre id="error-detail" style="margin-top:12px;padding:12px;background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.3);border-radius:8px;font-size:0.78rem;color:#ff6b6b;text-align:left;white-space:pre-wrap;word-break:break-all"></pre>
+        <a href="./app.html" style="display:inline-block;margin-top:20px;font-size:0.85rem;color:var(--muted)">← Volver a la app</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { CONFIG } from './js/config.js';
+
+    function setState(name) {
+      ['loading', 'success', 'error'].forEach(s =>
+        document.getElementById(`state-${s}`).style.display = s === name ? 'block' : 'none'
+      );
+    }
+
+    function showError(title, detail) {
+      setState('error');
+      document.getElementById('error-title').textContent = title;
+      document.getElementById('error-detail').textContent = detail || '(sin detalle)';
+      console.error('[strava-callback]', title, detail);
+    }
+
+    // Read the access token directly from localStorage so we never create a
+    // Supabase client on this page — a background auto-refresh on a second
+    // client can fail and wipe the session before the user clicks the CTA.
+    function getStoredAccessToken() {
+      try {
+        const projectRef = new URL(CONFIG.supabaseUrl).hostname.split('.')[0];
+        const raw = localStorage.getItem(`sb-${projectRef}-auth-token`);
+        return raw ? JSON.parse(raw)?.access_token ?? null : null;
+      } catch { return null; }
+    }
+
+    async function run() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const urlError = params.get('error');
+
+      if (urlError) {
+        showError('Autorización denegada', `Strava devolvió: ${urlError}`);
+        return;
+      }
+      if (!code) {
+        showError('Sin código de autorización', 'No se encontró el parámetro ?code= en la URL.');
+        return;
+      }
+
+      const accessToken = getStoredAccessToken();
+      if (!accessToken) {
+        showError('No estás autenticado', 'No hay sesión activa. Inicia sesión en la app y vuelve a intentarlo.');
+        return;
+      }
+
+      document.getElementById('loading-status').textContent = 'Exchanging authorization code…';
+
+      let resp, data;
+      try {
+        resp = await fetch(`${CONFIG.supabaseUrl}/functions/v1/exchange-strava-code`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+            'apikey': CONFIG.supabaseAnonKey,
+          },
+          body: JSON.stringify({ code, redirectUri: `${window.location.origin}/strava-callback.html` }),
+        });
+        data = await resp.json();
+      } catch (e) {
+        showError('Error de red', String(e));
+        return;
+      }
+
+      if (!resp.ok || !data?.ok) {
+        showError('Error al conectar Strava', data?.error ?? `HTTP ${resp.status}`);
+        return;
+      }
+
+      setState('success');
+    }
+
+    run();
+  </script>
+</body>
+</html>
