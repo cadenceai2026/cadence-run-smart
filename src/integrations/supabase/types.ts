@@ -269,7 +269,54 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      strava_connections_safe: {
+        Row: {
+          athlete_city: string | null
+          athlete_country: string | null
+          athlete_firstname: string | null
+          athlete_id: string | null
+          athlete_lastname: string | null
+          athlete_profile: string | null
+          connected_at: string | null
+          expires_at: string | null
+          last_sync_at: string | null
+          scope: string | null
+          strava_athlete_id: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          athlete_city?: string | null
+          athlete_country?: string | null
+          athlete_firstname?: string | null
+          athlete_id?: string | null
+          athlete_lastname?: string | null
+          athlete_profile?: string | null
+          connected_at?: string | null
+          expires_at?: string | null
+          last_sync_at?: string | null
+          scope?: string | null
+          strava_athlete_id?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          athlete_city?: string | null
+          athlete_country?: string | null
+          athlete_firstname?: string | null
+          athlete_id?: string | null
+          athlete_lastname?: string | null
+          athlete_profile?: string | null
+          connected_at?: string | null
+          expires_at?: string | null
+          last_sync_at?: string | null
+          scope?: string | null
+          strava_athlete_id?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
