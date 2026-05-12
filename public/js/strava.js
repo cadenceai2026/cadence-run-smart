@@ -29,11 +29,9 @@ export async function checkStravaConnection() {
   }
 
   try {
-    const { data, error } = await supabase
-      .from('strava_connections')
-      .select('*')
-      .eq('user_id', state.user.id)
-      .maybeSingle();
+    const { data: rows, error } = await supabase
+      .rpc('get_my_strava_connection');
+    const data = Array.isArray(rows) && rows.length ? rows[0] : null;
 
     if (error) {
       console.error('checkStravaConnection:', error);
