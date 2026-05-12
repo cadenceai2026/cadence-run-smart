@@ -159,10 +159,6 @@ export type Database = {
           email: string | null
           id: string
           plan: string | null
-          strava_client_id: string | null
-          strava_client_secret: string | null
-          strava_refresh: string | null
-          strava_token: string | null
           trial_ends_at: string | null
         }
         Insert: {
@@ -170,10 +166,6 @@ export type Database = {
           email?: string | null
           id: string
           plan?: string | null
-          strava_client_id?: string | null
-          strava_client_secret?: string | null
-          strava_refresh?: string | null
-          strava_token?: string | null
           trial_ends_at?: string | null
         }
         Update: {
@@ -181,10 +173,6 @@ export type Database = {
           email?: string | null
           id?: string
           plan?: string | null
-          strava_client_id?: string | null
-          strava_client_secret?: string | null
-          strava_refresh?: string | null
-          strava_token?: string | null
           trial_ends_at?: string | null
         }
         Relationships: []
