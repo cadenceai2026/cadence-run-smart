@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -33,12 +33,18 @@ function Index() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <span className="hidden sm:inline text-[10px] font-mono text-muted-foreground uppercase tracking-[0.2em]">
-            v0.1 · Private Beta
-          </span>
-          <button className="px-4 py-2 bg-accent text-accent-foreground text-sm font-semibold rounded-md hover:brightness-110 transition-all">
-            Connect Strava
-          </button>
+          <Link
+            to="/login"
+            className="hidden sm:inline text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Sign in
+          </Link>
+          <Link
+            to="/signup"
+            className="px-4 py-2 bg-accent text-accent-foreground text-sm font-semibold rounded-md hover:brightness-110 transition-all"
+          >
+            Get started
+          </Link>
         </div>
       </nav>
 
