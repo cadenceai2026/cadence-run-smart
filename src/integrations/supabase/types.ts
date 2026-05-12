@@ -269,57 +269,27 @@ export type Database = {
       }
     }
     Views: {
-      strava_connections_safe: {
-        Row: {
-          athlete_city: string | null
-          athlete_country: string | null
-          athlete_firstname: string | null
-          athlete_id: string | null
-          athlete_lastname: string | null
-          athlete_profile: string | null
-          connected_at: string | null
-          expires_at: string | null
-          last_sync_at: string | null
-          scope: string | null
-          strava_athlete_id: number | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          athlete_city?: string | null
-          athlete_country?: string | null
-          athlete_firstname?: string | null
-          athlete_id?: string | null
-          athlete_lastname?: string | null
-          athlete_profile?: string | null
-          connected_at?: string | null
-          expires_at?: string | null
-          last_sync_at?: string | null
-          scope?: string | null
-          strava_athlete_id?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          athlete_city?: string | null
-          athlete_country?: string | null
-          athlete_firstname?: string | null
-          athlete_id?: string | null
-          athlete_lastname?: string | null
-          athlete_profile?: string | null
-          connected_at?: string | null
-          expires_at?: string | null
-          last_sync_at?: string | null
-          scope?: string | null
-          strava_athlete_id?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_my_strava_connection: {
+        Args: never
+        Returns: {
+          athlete_city: string
+          athlete_country: string
+          athlete_firstname: string
+          athlete_id: string
+          athlete_lastname: string
+          athlete_profile: string
+          connected_at: string
+          expires_at: string
+          last_sync_at: string
+          scope: string
+          strava_athlete_id: number
+          updated_at: string
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

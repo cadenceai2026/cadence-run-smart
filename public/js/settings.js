@@ -178,22 +178,9 @@ async function saveNotifications() {
 }
 
 async function updateStravaToken() {
-  const token = qs('#new-token-input')?.value.trim();
-  if (!token) return toast('Paste a token first', 'error');
-
-  const { error } = await supabase
-    .from('strava_connections')
-    .update({ access_token: token })
-    .eq('user_id', state.user.id);
-
-  if (error) return toast(error.message, 'error');
-
-  if (state.stravaConnection) state.stravaConnection.access_token = token;
-  const inp = qs('#new-token-input');
-  if (inp) inp.value = '';
-  const wrap = qs('#strava-refresh-wrap');
-  if (wrap) wrap.style.display = 'none';
-  toast('Token updated ✓');
+  // Tokens are server-only now. Direct token edits are no longer permitted —
+  // users must reconnect Strava from Settings to refresh credentials.
+  toast('Use "Reconnect Strava" to refresh credentials', 'error');
 }
 
 async function changePassword() {
