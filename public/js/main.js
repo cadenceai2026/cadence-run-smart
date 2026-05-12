@@ -1,0 +1,36 @@
+import { initAuth } from './auth.js';
+import { initRouter, navigate } from './router.js';
+import { initStrava } from './strava.js';
+import { initBilling } from './billing.js';
+import { initSettings } from './settings.js';
+import { initGroups } from './groups.js';
+import { initCoach } from './coach.js';
+import { initActivities } from './activities.js';
+
+async function boot() {
+  initRouter();
+  initStrava();
+  initBilling();
+  initSettings();
+  initGroups();
+  initCoach();
+  initActivities();
+
+  // Wire dashboard quick-action cards and "View all →" buttons
+  document.querySelectorAll('[data-goto]').forEach(btn => {
+    btn.addEventListener('click', () => navigate(btn.dataset.goto));
+  });
+
+  // Wire topbar "Ask AI Coach" button
+  document.querySelector('#btn-ask-coach')?.addEventListener('click', () => navigate('coach'));
+
+  // Wire elite welcome modal close button
+  document.querySelector('#btn-close-elite')?.addEventListener('click', () => {
+    document.querySelector('#elite-modal').style.display = 'none';
+  });
+
+  // Auth last — it controls what screen shows and calls checkStravaConnection
+  await initAuth();
+}
+
+boot();
